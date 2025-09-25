@@ -1,0 +1,1502 @@
+
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrated Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .report-card {
+            background-color: #2d3748;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .animate-spin-slow {
+            animation: spin 3s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        select, input[type="date"], input[type="email"], input[type="number"] {
+            background-color: #4a5568;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+        select:focus, input[type="date"]:focus, input[type="email"]:focus, input[type="number"]:focus {
+            border-color: #63b3ed;
+            box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.5);
+            background-color: #2d3748;
+        }
+        .bg-blue-600 {
+            background-color: #4299e1;
+        }
+        .hover\:bg-blue-700:hover {
+            background-color: #3182ce;
+        }
+        .report-item-dark:hover, .alert-card:hover {
+            background-color: #4a5568;
+        }
+        .text-gray-600 {
+            color: #a0aec0;
+        }
+        .text-gray-800 {
+            color: #cbd5e0;
+        }
+        .text-gray-500 {
+            color: #a0aec0;
+        }
+        .scroll-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .alert-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 4px;
+        }
+        .scroll-container::-webkit-scrollbar-track {
+            background-color: #1f2937;
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            border-radius: 0.5rem 0.5rem 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #1f2937;
+            color: #d1d5db;
+        }
+        .tab-button.inactive {
+            background-color: #374151;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8 flex flex-col items-center">
+
+    <div class="max-w-6xl w-full mx-auto">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center mb-2">Integrated Dashboard</h1>
+        <p class="text-xs text-center text-gray-400 mb-6">Unified Reporting & Notifications System</p>
+
+        <div class="flex justify-center mb-4">
+            <button id="reportsTabBtn" class="tab-button active">Reporting</button>
+            <button id="notificationsTabBtn" class="tab-button inactive">Notifications & Alerts</button>
+        </div>
+
+        <div id="reportsTab" class="max-w-6xl w-full mx-auto space-y-8">
+            <header class="text-center">
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-100">Reporting Dashboard</h1>
+                <p class="mt-2 text-lg text-gray-600">Generate, manage, and track your financial reports.</p>
+            </header>
+
+            <div class="report-card rounded-2xl p-6 sm:p-8">
+                <h2 class="text-xl sm:text-2xl font-semibold text-gray-100">Generate a New Report</h2>
+                <p class="text-gray-400 mt-2">Customize and create a new financial report for your accountants.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="reportType" class="block text-sm font-medium text-gray-300">Report Type</label>
+                            <select id="reportType" class="mt-1 block w-full rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <option value="VAT Report">VAT Report</option>
+                                <option value="Payments Report">Payments Report</option>
+                                <option value="P&L Report">P&L Report</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="accountantLocation" class="block text-sm font-medium text-gray-300">Accountant Location</label>
+                            <select id="accountantLocation" class="mt-1 block w-full rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <option value="Germany">Germany</option>
+                                <option value="Sweden">Sweden</option>
+                                <option value="USA">USA</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="currency" class="block text-sm font-medium text-gray-300">Currency</label>
+                            <select id="currency" class="mt-1 block w-full rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <option value="EUR">EUR</option>
+                                <option value="USD">USD</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="startDate" class="block text-sm font-medium text-gray-300">Date Range</label>
+                            <div class="mt-1 flex space-x-2">
+                                <input type="date" id="startDate" class="block w-1/2 rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                                <input type="date" id="endDate" class="block w-1/2 rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                            </div>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-300">Recipient Email</label>
+                            <input type="email" id="email" placeholder="accountant@example.com" class="mt-1 block w-full rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500" required />
+                        </div>
+                        <div>
+                            <label for="fileFormat" class="block text-sm font-medium text-gray-300">File Format</label>
+                            <select id="fileFormat" class="mt-1 block w-full rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <option value="PDF">PDF</option>
+                                <option value="XLSX">XLSX</option>
+                                <option value="CSV">CSV</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 flex justify-end">
+                    <button id="generateBtn" class="bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 w-full sm:w-auto">
+                        Generate & Send Report
+                    </button>
+                </div>
+                <div id="statusBox" class="mt-6 hidden p-4 rounded-lg text-sm text-center"></div>
+            </div>
+            <div class="report-card rounded-2xl p-6 sm:p-8">
+                <h2 class="text-xl sm:text-2xl font-semibold text-gray-100">Recent Reports</h2>
+                <p class="text-gray-400 mt-2">A history of all generated and sent reports.</p>
+                <div id="reportList" class="mt-6 divide-y divide-gray-700">
+                    <div class="flex justify-center items-center py-8">
+                        <p class="text-gray-400 text-sm">No reports generated yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="notificationsTab" class="max-w-4xl w-full mx-auto" style="display:none;">
+            <div class="flex justify-center mb-4">
+                <button id="alertsTabInnerBtn" class="tab-button active">Notifications & Alerts</button>
+                <button id="createOrderTabBtn" class="tab-button inactive">Create New Order</button>
+                <button id="deadlinesTabBtn" class="tab-button inactive">Deadlines</button>
+            </div>
+            <div id="tabContent">
+                <div id="alertsTabInner" class="bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div id="loading" class="flex justify-center items-center py-10" style="display:none;">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-100"></div>
+                    </div>
+                    <div id="dashboard-content" class="space-y-8" style="display:none;">
+                        <div class="bg-gray-800 rounded-2xl shadow-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold">Low Stock Alerts</h2>
+                                <div class="flex items-center space-x-2">
+                                    <span id="low-stock-count" class="px-3 py-1 bg-red-800 text-red-100 rounded-full text-sm font-medium">0</span>
+                                    <button onclick="resolveAll('low_stock')" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-full text-xs transition-colors duration-300">
+                                        Resolve All
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="low-stock-alerts" class="scroll-container space-y-4">
+                                <p class="text-gray-500 text-center">No low stock alerts right now. All good!</p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 rounded-2xl shadow-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold">New Orders</h2>
+                                <div class="flex items-center space-x-2">
+                                    <span id="new-order-count" class="px-3 py-1 bg-blue-800 text-blue-100 rounded-full text-sm font-medium">0</span>
+                                    <button onclick="resolveAll('new_order')" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-full text-xs transition-colors duration-300">
+                                        Resolve All
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="new-order-alerts" class="scroll-container space-y-4">
+                                <p class="text-gray-500 text-center">No new orders at the moment.</p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-800 rounded-2xl shadow-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold">Shipment Issues</h2>
+                                <div class="flex items-center space-x-2">
+                                    <span id="shipment-count" class="px-3 py-1 bg-yellow-800 text-yellow-100 rounded-full text-sm font-medium">0</span>
+                                    <button onclick="resolveAll('delayed_shipment')" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-full text-xs transition-colors duration-300">
+                                        Resolve All
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="shipment-alerts" class="scroll-container space-y-4">
+                                <p class="text-gray-500 text-center">No shipment issues detected.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="createOrderTab" class="bg-gray-800 rounded-2xl shadow-lg p-6" style="display:none;">
+                    <h3 class="text-lg font-bold mb-4 text-center">Create New Order</h3>
+                    <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+                        <select id="skuSelect" class="w-full sm:w-1/2 p-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"></select>
+                        <input type="number" id="quantityInput" placeholder="Enter Quantity (e.g., 20)" class="w-full sm:w-1/4 p-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-lg placeholder-gray-500 focus:outline-none focus:border-blue-500" value="1" />
+                        <button onclick="processNewOrder()" class="w-full sm:w-1/4 bg-blue-600 text-white font-medium py-2 px-4 rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
+                            Process Order
+                        </button>
+                    </div>
+                </div>
+
+                <div id="deadlinesTab" class="bg-gray-800 rounded-2xl shadow-lg p-6" style="display:none;">
+                    <div id="deadlines-loading" class="flex justify-center items-center py-10" style="display:none;">
+                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-100"></div>
+                    </div>
+                    <div id="deadlines-content" class="space-y-8" style="display:none;">
+                        <div class="bg-gray-800 rounded-2xl shadow-lg p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold">Upcoming Deadlines</h2>
+                                <div class="flex items-center space-x-2">
+                                    <span id="deadline-count" class="px-3 py-1 bg-green-800 text-green-100 rounded-full text-sm font-medium">0</span>
+                                    <button onclick="resolveAll('deadline')" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-full text-xs transition-colors duration-300">
+                                        Resolve All
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="deadline-alerts" class="scroll-container space-y-4">
+                                <p class="text-gray-500 text-center">No upcoming deadlines. You're all caught up!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="customModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5); display: none;">
+        <div class="bg-gray-800 rounded-lg p-6 shadow-xl w-full max-w-sm transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+            <h3 class="text-xl font-bold mb-2 text-gray-100" id="modalTitle"></h3>
+            <p class="text-gray-300 mb-4" id="modalMessage"></p>
+            <button onclick="hideModal()" class="w-full bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- API URLs ---
+        const REPORTING_API_URL = 'http://127.0.0.1:5000/reports';
+        const NOTIFICATION_API_URL = 'http://127.0.0.1:5000/api/notifications';
+        const PRODUCTS_API_URL = 'http://127.0.0.1:5000/api/products';
+        const PROCESS_ORDER_API_URL = 'http://127.0.0.1:5000/api/process_order';
+
+        // --- Main Tab UI Elements ---
+        const reportsTabBtn = document.getElementById('reportsTabBtn');
+        const notificationsTabBtn = document.getElementById('notificationsTabBtn');
+        const reportsTab = document.getElementById('reportsTab');
+        const notificationsTab = document.getElementById('notificationsTab');
+
+        // --- Reporting Module UI Elements ---
+        const generateBtn = document.getElementById('generateBtn');
+        const reportList = document.getElementById('reportList');
+        const statusBox = document.getElementById('statusBox');
+
+        // --- Notifications Module UI Elements ---
+        const alertsTabInnerBtn = document.getElementById('alertsTabInnerBtn');
+        const createOrderTabBtn = document.getElementById('createOrderTabBtn');
+        const deadlinesTabBtn = document.getElementById('deadlinesTabBtn');
+        const alertsTabInner = document.getElementById('alertsTabInner');
+        const createOrderTab = document.getElementById('createOrderTab');
+        const deadlinesTab = document.getElementById('deadlinesTab');
+        const loadingSpinner = document.getElementById('loading');
+        const dashboardContent = document.getElementById('dashboard-content');
+        const deadlinesLoading = document.getElementById('deadlines-loading');
+        const deadlinesContent = document.getElementById('deadlines-content');
+        const skuSelect = document.getElementById('skuSelect');
+        const quantityInput = document.getElementById('quantityInput');
+        const lowStockContainer = document.getElementById('low-stock-alerts');
+        const newOrderContainer = document.getElementById('new-order-alerts');
+        const shipmentContainer = document.getElementById('shipment-alerts');
+        const deadlineContainer = document.getElementById('deadline-alerts');
+        const lowStockCount = document.getElementById('low-stock-count');
+        const newOrderCount = document.getElementById('new-order-count');
+        const shipmentCount = document.getElementById('shipment-count');
+        const deadlineCount = document.getElementById('deadline-count');
+        const customModal = document.getElementById('customModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalContent = document.getElementById('modalContent');
+        
+        // --- Global Functions ---
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            customModal.style.display = 'flex';
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        window.hideModal = function() {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                customModal.style.display = 'none';
+            }, 300);
+        }
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString();
+        }
+
+        // --- Reporting Module Functions ---
+        const renderReports = (reports) => {
+            reportList.innerHTML = '';
+            if (reports.length === 0) {
+                reportList.innerHTML = `
+                    <div class="flex justify-center items-center py-8">
+                        <p class="text-gray-400 text-sm">No reports generated yet.</p>
+                    </div>
+                `;
+            } else {
+                reports.forEach(report => {
+                    const reportItem = document.createElement('div');
+                    reportItem.className = 'py-4 px-2 sm:flex sm:justify-between sm:items-center hover:bg-gray-50 transition-colors duration-200 rounded-lg report-item-dark';
+                    let statusClass = '';
+                    let statusText = '';
+                    let statusIcon = '';
+                    switch (report.status) {
+                        case 'Generating':
+                            statusClass = 'text-yellow-400 bg-yellow-900';
+                            statusText = 'Generating...';
+                            statusIcon = `
+                                <svg class="animate-spin-slow h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 4.75A7.25 7.25 0 0 0 4.75 12a7.25 7.25 0 0 0 7.25 7.25c3.67 0 6.74-2.69 7.15-6.22l-.01-.1-.01-.07h-2.12a5.12 5.12 0 0 1-5.02 4.73A5.25 5.25 0 0 1 6.75 12a5.25 5.25 0 0 1 5.25-5.25V4.75Z" class="opacity-30" />
+                                    <path fill-rule="evenodd" d="M11.646 2.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L12.5 3.707V6.5a.5.5 0 0 1-1 0V3.707L10.354 5.354a.5.5 0 1 1-.708-.708l2-2ZM12 4.75A7.25 7.25 0 0 0 4.75 12a7.25 7.25 0 0 0 7.25 7.25v-2.25A5.25 5.25 0 0 1 6.75 12a5.25 5.25 0 0 1 5.25-5.25V4.75Z" clip-rule="evenodd" />
+                                </svg>`;
+                            break;
+                        case 'Sent':
+                            statusClass = 'text-green-400 bg-green-900';
+                            statusText = 'Sent';
+                            statusIcon = `
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-green-400">
+                                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                                </svg>`;
+                            break;
+                        case 'Failed':
+                            statusClass = 'text-red-400 bg-red-900';
+                            statusText = 'Failed';
+                            statusIcon = `
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-red-400">
+                                    <path fill-rule="evenodd" d="M9.401 3.003c1.155-2.003 4.043-2.003 5.198 0l7.355 12.748c1.154 2.002-.308 4.503-2.599 4.503H4.645c-2.291 0-3.753-2.501-2.599-4.503L9.4 3.003Zm2.022 13.627a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0ZM12 10.375a.75.75 0 0 0-.75.75v3.75a.75.75 0 0 0 1.5 0v-3.75a.75.75 0 0 0-.75-.75Z" clip-rule="evenodd" />
+                                </svg>`;
+                            break;
+                    }
+                    reportItem.innerHTML = `
+                        <div class="flex-grow">
+                            <p class="text-base font-medium">${report.name || 'Unnamed Report'}</p>
+                            <p class="text-sm text-gray-400">
+                                <span class="font-semibold">${report.accountant || 'N/A'}</span> |
+                                <span class="font-semibold">${report.currency || 'N/A'}</span> |
+                                <span class="font-semibold">${report.format || 'N/A'}</span> |
+                                ${report.createdAt ? new Date(report.createdAt).toLocaleDateString() : 'N/A'}
+                            </p>
+                        </div>
+                        <div class="mt-2 sm:mt-0 flex items-center space-x-2">
+                            ${statusIcon}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </div>
+                    `;
+                    reportList.appendChild(reportItem);
+                });
+            }
+        };
+        
+        const fetchReports = async () => {
+            try {
+                const response = await fetch(REPORTING_API_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const reports = await response.json();
+                renderReports(reports.reverse());
+            } catch (error) {
+                console.error("Error fetching reports:", error);
+                showStatus("Failed to connect to the backend. Please ensure the server is running.", 'error');
+            }
+        };
+
+        const showStatus = (message, type) => {
+            statusBox.textContent = message;
+            statusBox.classList.remove('hidden', 'bg-red-100', 'text-red-600', 'bg-green-100', 'text-green-600');
+            if (type === 'success') {
+                statusBox.classList.add('bg-green-100', 'text-green-600');
+            } else if (type === 'error') {
+                statusBox.classList.add('bg-red-100', 'text-red-600');
+            }
+        };
+
+        generateBtn.addEventListener('click', async () => {
+            const reportType = document.getElementById('reportType').value;
+            const accountant = document.getElementById('accountantLocation').value;
+            const currency = document.getElementById('currency').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const email = document.getElementById('email').value;
+            const fileFormat = document.getElementById('fileFormat').value;
+            if (!startDate || !endDate || !email) {
+                showStatus('Please fill out all fields to generate a report.', 'error');
+                return;
+            }
+            const newReport = {
+                name: `${reportType} for ${accountant} (${startDate} to ${endDate})`,
+                accountant: accountant,
+                currency: currency,
+                format: fileFormat,
+                email: email,
+                startDate: startDate,
+                endDate: endDate
+            };
+            try {
+                const response = await fetch(REPORTING_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newReport),
+                });
+                const responseText = await response.text();
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}, response: ${responseText}`);
+                }
+                showStatus('Report generation request sent successfully!', 'success');
+                fetchReports();
+            } catch (error) {
+                console.error("Error sending report data:", error);
+                showStatus(`Failed to send report request: ${error.message}`, 'error');
+            }
+        });
+        
+        // --- Notifications Module Functions ---
+        async function fetchProducts() {
+            try {
+                const response = await fetch(PRODUCTS_API_URL);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch products');
+                }
+                const products = await response.json();
+                populateSkuDropdown(products);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                showModal("Connection Error", "Could not fetch products from the backend. Please make sure it is running.");
+            }
+        }
+
+        function populateSkuDropdown(products) {
+            if (products.length === 0) {
+                skuSelect.innerHTML = `<option value="">No products available</option>`;
+                return;
+            }
+            skuSelect.innerHTML = products.map(p => 
+                `<option value="${p.sku}">${p.name} (${p.sku})</option>`
+            ).join('');
+        }
+
+        async function fetchAndRenderAlerts() {
+            loadingSpinner.style.display = 'flex';
+            dashboardContent.style.display = 'none';
+            try {
+                const response = await fetch(NOTIFICATION_API_URL);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const notifications = await response.json();
+                lowStockContainer.innerHTML = '';
+                newOrderContainer.innerHTML = '';
+                shipmentContainer.innerHTML = '';
+                const lowStockAlerts = notifications.filter(n => n.type === 'low_stock');
+                const newOrderAlerts = notifications.filter(n => n.type === 'new_order');
+                const shipmentAlerts = notifications.filter(n => n.type === 'delayed_shipment');
+                lowStockCount.textContent = lowStockAlerts.length;
+                newOrderCount.textContent = newOrderAlerts.length;
+                shipmentCount.textContent = shipmentAlerts.length;
+                renderAlerts(lowStockAlerts, lowStockContainer);
+                renderAlerts(newOrderAlerts, newOrderContainer);
+                renderAlerts(shipmentAlerts, shipmentContainer);
+            } catch (error) {
+                console.error("Error fetching alerts:", error);
+                showModal("Connection Error", "Could not connect to the backend server. Please make sure it is running.");
+            } finally {
+                loadingSpinner.style.display = 'none';
+                dashboardContent.style.display = 'block';
+            }
+        }
+
+        async function fetchAndRenderDeadlines() {
+            deadlinesLoading.style.display = 'flex';
+            deadlinesContent.style.display = 'none';
+            try {
+                const response = await fetch(NOTIFICATION_API_URL);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const notifications = await response.json();
+                deadlineContainer.innerHTML = '';
+                const deadlineAlerts = notifications.filter(n => n.type === 'deadline');
+                deadlineCount.textContent = deadlineAlerts.length;
+                renderAlerts(deadlineAlerts, deadlineContainer);
+            } catch (error) {
+                console.error("Error fetching deadlines:", error);
+                showModal("Connection Error", "Could not connect to the backend server. Please make sure it is running.");
+            } finally {
+                deadlinesLoading.style.display = 'none';
+                deadlinesContent.style.display = 'block';
+            }
+        }
+
+        function renderAlerts(alerts, container) {
+            if (alerts.length === 0) {
+                const message = container.id === 'low-stock-alerts' ? 'No low stock alerts right now. All good!' :
+                                 container.id === 'new-order-alerts' ? 'No new orders at the moment.' :
+                                 container.id === 'shipment-alerts' ? 'No shipment issues detected.' :
+                                 'No upcoming deadlines. You\'re all caught up!';
+                container.innerHTML = `<p class="text-gray-500 text-center">${message}</p>`;
+                return;
+            }
+            alerts.forEach(alert => {
+                const alertCard = document.createElement('div');
+                alertCard.className = 'alert-card bg-gray-700 p-4 rounded-xl shadow-inner transition-all duration-300 flex justify-between items-start';
+                alertCard.innerHTML = `
+                    <div class="flex-grow">
+                        <p class="font-bold">${alert.message}</p>
+                        <p class="text-sm text-gray-400 mt-1">${alert.source} • <span class="text-xs">${formatTimestamp(alert.timestamp)}</span></p>
+                    </div>
+                    <button onclick="resolveAlert('${alert.id}')" class="ml-4 flex-shrink-0 bg-gray-600 hover:bg-gray-500 text-gray-200 font-medium py-1 px-3 rounded-full text-xs transition-colors duration-300">
+                        Resolve
+                    </button>
+                `;
+                container.appendChild(alertCard);
+            });
+        }
+
+        window.resolveAlert = async function(alertId) {
+            try {
+                const response = await fetch(`${NOTIFICATION_API_URL}/${alertId}/resolve`, {
+                    method: 'PUT'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to resolve alert on the server.');
+                }
+                showModal("Resolved!", "The alert has been marked as resolved.");
+                const activeTab = document.querySelector('.tab-button.active').id;
+                if (activeTab === 'notificationsTabBtn') {
+                    const innerTab = document.querySelector('.tab-button.active').textContent.trim();
+                    if (innerTab === 'Notifications & Alerts') {
+                        fetchAndRenderAlerts();
+                    } else if (innerTab === 'Deadlines') {
+                        fetchAndRenderDeadlines();
+                    }
+                }
+            } catch (error) {
+                console.error("Error resolving alert:", error);
+                showModal("Error", "Could not resolve alert. Please try again.");
+            }
+        }
+        
+        window.resolveAll = async function(alertType) {
+            let currentCount;
+            if (alertType === 'low_stock') currentCount = parseInt(lowStockCount.textContent);
+            else if (alertType === 'new_order') currentCount = parseInt(newOrderCount.textContent);
+            else if (alertType === 'delayed_shipment') currentCount = parseInt(shipmentCount.textContent);
+            else if (alertType === 'deadline') currentCount = parseInt(deadlineCount.textContent);
+            if (currentCount === 0) {
+                showModal("Nothing to Resolve", `There are no active ${alertType.replace('_', ' ')} alerts.`);
+                return;
+            }
+            try {
+                const response = await fetch(`${NOTIFICATION_API_URL}/resolve_by_type/${alertType}`, {
+                    method: 'PUT'
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to resolve alerts on the server.');
+                }
+                const data = await response.json();
+                showModal("All Resolved!", data.message);
+                const activeTab = document.querySelector('.tab-button.active').id;
+                if (activeTab === 'notificationsTabBtn') {
+                    const innerTab = document.querySelector('.tab-button.active').textContent.trim();
+                    if (innerTab === 'Notifications & Alerts') {
+                        fetchAndRenderAlerts();
+                    } else if (innerTab === 'Deadlines') {
+                        fetchAndRenderDeadlines();
+                    }
+                }
+            } catch (error) {
+                console.error("Error resolving all alerts:", error);
+                showModal("Error", `Could not resolve all alerts. ${error.message}`);
+            }
+        }
+
+        window.processNewOrder = async function() {
+            const sku = skuSelect.value;
+            const quantity = parseInt(quantityInput.value, 10);
+            if (!sku || isNaN(quantity) || quantity <= 0) {
+                showModal("Invalid Input", "Please select a valid SKU and enter a positive quantity.");
+                return;
+            }
+            try {
+                const payload = { sku, quantity };
+                const response = await fetch(PROCESS_ORDER_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to process order on the server.');
+                }
+                const data = await response.json();
+                showModal("Success!", data.message);
+                fetchAndRenderAlerts();
+                fetchAndRenderDeadlines();
+            } catch (error) {
+                console.error("Error processing order:", error);
+                showModal("Error", `Could not process order. ${error.message}`);
+            }
+        }
+
+        // --- Tab Switching Logic ---
+        function showMainTab(tabName) {
+            reportsTab.style.display = 'none';
+            notificationsTab.style.display = 'none';
+            reportsTabBtn.classList.remove('active');
+            notificationsTabBtn.classList.remove('active');
+            reportsTabBtn.classList.add('inactive');
+            notificationsTabBtn.classList.add('inactive');
+
+            if (tabName === 'reports') {
+                reportsTab.style.display = 'block';
+                reportsTabBtn.classList.add('active');
+                reportsTabBtn.classList.remove('inactive');
+            } else if (tabName === 'notifications') {
+                notificationsTab.style.display = 'block';
+                notificationsTabBtn.classList.add('active');
+                notificationsTabBtn.classList.remove('inactive');
+            }
+        }
+
+        function showInnerTab(tabName) {
+            alertsTabInner.style.display = 'none';
+            createOrderTab.style.display = 'none';
+            deadlinesTab.style.display = 'none';
+            alertsTabInnerBtn.classList.remove('active');
+            alertsTabInnerBtn.classList.add('inactive');
+            createOrderTabBtn.classList.remove('active');
+            createOrderTabBtn.classList.add('inactive');
+            deadlinesTabBtn.classList.remove('active');
+            deadlinesTabBtn.classList.add('inactive');
+
+            if (tabName === 'alerts') {
+                alertsTabInner.style.display = 'block';
+                alertsTabInnerBtn.classList.add('active');
+                alertsTabInnerBtn.classList.remove('inactive');
+                fetchAndRenderAlerts();
+            } else if (tabName === 'create-order') {
+                createOrderTab.style.display = 'block';
+                createOrderTabBtn.classList.add('active');
+                createOrderTabBtn.classList.remove('inactive');
+            } else if (tabName === 'deadlines') {
+                deadlinesTab.style.display = 'block';
+                deadlinesTabBtn.classList.add('active');
+                deadlinesTabBtn.classList.remove('inactive');
+                fetchAndRenderDeadlines();
+            }
+        }
+
+        reportsTabBtn.addEventListener('click', () => showMainTab('reports'));
+        notificationsTabBtn.addEventListener('click', () => {
+            showMainTab('notifications');
+            showInnerTab('alerts'); // Ensure an inner tab is selected when switching to notifications
+        });
+        alertsTabInnerBtn.addEventListener('click', () => showInnerTab('alerts'));
+        createOrderTabBtn.addEventListener('click', () => showInnerTab('create-order'));
+        deadlinesTabBtn.addEventListener('click', () => showInnerTab('deadlines'));
+
+        // --- Initial Setup on Page Load ---
+        window.onload = function() {
+            fetchProducts();
+            showMainTab('reports');
+            setInterval(fetchReports, 2000);
+            setInterval(fetchAndRenderAlerts, 5000);
+        };
+    </script>
+</body>
+</html> 
+
+
+
+<!-- 
+ <!DOCTYPE html>
+<html lang="en" class="bg-gray-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrated Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            color: #e2e8f0;
+        }
+        .report-card {
+            background-color: #2d3748;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .animate-spin-slow {
+            animation: spin 3s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        select, input[type="date"], input[type="email"], input[type="number"] {
+            background-color: #4a5568;
+            border-color: #4a5568;
+            color: #e2e8f0;
+        }
+        select:focus, input[type="date"]:focus, input[type="email"]:focus, input[type="number"]:focus {
+            border-color: #63b3ed;
+            box-shadow: 0 0 0 2px rgba(99, 179, 237, 0.5);
+            background-color: #2d3748;
+        }
+        .bg-blue-600 {
+            background-color: #4299e1;
+        }
+        .hover\:bg-blue-700:hover {
+            background-color: #3182ce;
+        }
+        .report-item-dark:hover, .alert-card:hover {
+            background-color: #4a5568;
+        }
+        .text-gray-600 {
+            color: #a0aec0;
+        }
+        .text-gray-800 {
+            color: #cbd5e0;
+        }
+        .text-gray-500 {
+            color: #a0aec0;
+        }
+        .scroll-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .alert-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .scroll-container::-webkit-scrollbar-thumb {
+            background-color: #4b5563;
+            border-radius: 4px;
+        }
+        .scroll-container::-webkit-scrollbar-track {
+            background-color: #1f2937;
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            border-radius: 0.5rem 0.5rem 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: #1f2937;
+            color: #d1d5db;
+        }
+        .tab-button.inactive {
+            background-color: #374151;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8 flex flex-col items-center">
+
+    <div class="max-w-6xl w-full mx-auto">
+        <h1 class="text-3xl sm:text-4xl font-bold text-center mb-2">Integrated Dashboard</h1>
+        <p class="text-xs text-center text-gray-400 mb-6">Unified Reporting & Notifications System</p>
+
+        <div id="initialLoading" class="flex flex-col items-center justify-center py-12 text-gray-400" style="display: none;">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-100"></div>
+            <p class="mt-4 text-lg font-medium">Connecting to server...</p>
+        </div>
+
+        <div id="mainContent" class="max-w-6xl w-full mx-auto" style="display: none;">
+            <div class="flex justify-center mb-4">
+                <button id="reportsTabBtn" class="tab-button active">Reporting</button>
+                <button id="notificationsTabBtn" class="tab-button inactive">Notifications & Alerts</button>
+            </div>
+
+            <div id="reportsTab" class="max-w-6xl w-full mx-auto space-y-8">
+                <header class="text-center">
+                    <h1 class="text-3xl sm:text-4xl font-bold text-gray-100">Reporting Dashboard</h1>
+                    <p class="mt-2 text-lg text-gray-600">Generate, manage, and track your financial reports.</p>
+                </header>
+
+                <div class="report-card rounded-2xl p-6 sm:p-8">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-gray-100">Generate a New Report</h2>
+                    <p class="text-gray-400 mt-2">Customize and create a new financial report for your accountants.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label for="reportType" class="block text-sm font-medium text-gray-300">Report Type</label>
+                                <select id="reportType" class="mt-1 block w-full rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="VAT Report">VAT Report</option>
+                                    <option value="Payments Report">Payments Report</option>
+                                    <option value="P&L Report">P&L Report</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="accountantLocation" class="block text-sm font-medium text-gray-300">Accountant Location</label>
+                                <select id="accountantLocation" class="mt-1 block w-full rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="Germany">Germany</option>
+                                    <option value="Sweden">Sweden</option>
+                                    <option value="USA">USA</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="currency" class="block text-sm font-medium text-gray-300">Currency</label>
+                                <select id="currency" class="mt-1 block w-full rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="EUR">EUR</option>
+                                    <option value="USD">USD</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="startDate" class="block text-sm font-medium text-gray-300">Date Range</label>
+                                <div class="mt-1 flex space-x-2">
+                                    <input type="date" id="startDate" class="block w-1/2 rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                                    <input type="date" id="endDate" class="block w-1/2 rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                                </div>
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-300">Recipient Email</label>
+                                <input type="email" id="email" placeholder="accountant@example.com" class="mt-1 block w-full rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500" required />
+                            </div>
+                            <div>
+                                <label for="fileFormat" class="block text-sm font-medium text-gray-300">File Format</label>
+                                <select id="fileFormat" class="mt-1 block w-full rounded-lg border-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="PDF">PDF</option>
+                                    <option value="XLSX">XLSX</option>
+                                    <option value="CSV">CSV</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 flex justify-end">
+                        <button id="generateBtn" class="bg-blue-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 w-full sm:w-auto">
+                            Generate & Send Report
+                        </button>
+                    </div>
+                    <div id="statusBox" class="mt-6 hidden p-4 rounded-lg text-sm text-center"></div>
+                </div>
+                <div class="report-card rounded-2xl p-6 sm:p-8">
+                    <h2 class="text-xl sm:text-2xl font-semibold text-gray-100">Recent Reports</h2>
+                    <p class="text-gray-400 mt-2">A history of all generated and sent reports.</p>
+                    <div id="reportList" class="mt-6 divide-y divide-gray-700">
+                        <div class="flex justify-center items-center py-8">
+                            <p class="text-gray-400 text-sm">No reports generated yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="notificationsTab" class="max-w-4xl w-full mx-auto" style="display:none;">
+                <div class="flex justify-center mb-4">
+                    <button id="alertsTabInnerBtn" class="tab-button active">Notifications & Alerts</button>
+                    <button id="createOrderTabBtn" class="tab-button inactive">Create New Order</button>
+                    <button id="deadlinesTabBtn" class="tab-button inactive">Deadlines</button>
+                </div>
+                <div id="tabContent">
+                    <div id="alertsTabInner" class="bg-gray-800 rounded-2xl shadow-lg p-6">
+                        <div id="loading" class="flex justify-center items-center py-10" style="display:none;">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-100"></div>
+                        </div>
+                        <div id="dashboard-content" class="space-y-8" style="display:none;">
+                            <div class="bg-gray-800 rounded-2xl shadow-lg p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-xl font-semibold">Low Stock Alerts</h2>
+                                    <div class="flex items-center space-x-2">
+                                        <span id="low-stock-count" class="px-3 py-1 bg-red-800 text-red-100 rounded-full text-sm font-medium">0</span>
+                                        <button onclick="resolveAll('low_stock')" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-full text-xs transition-colors duration-300">
+                                            Resolve All
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="low-stock-alerts" class="scroll-container space-y-4">
+                                    <p class="text-gray-500 text-center">No low stock alerts right now. All good!</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800 rounded-2xl shadow-lg p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-xl font-semibold">New Orders</h2>
+                                    <div class="flex items-center space-x-2">
+                                        <span id="new-order-count" class="px-3 py-1 bg-blue-800 text-blue-100 rounded-full text-sm font-medium">0</span>
+                                        <button onclick="resolveAll('new_order')" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-full text-xs transition-colors duration-300">
+                                            Resolve All
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="new-order-alerts" class="scroll-container space-y-4">
+                                    <p class="text-gray-500 text-center">No new orders at the moment.</p>
+                                </div>
+                            </div>
+                            <div class="bg-gray-800 rounded-2xl shadow-lg p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-xl font-semibold">Shipment Issues</h2>
+                                    <div class="flex items-center space-x-2">
+                                        <span id="shipment-count" class="px-3 py-1 bg-yellow-800 text-yellow-100 rounded-full text-sm font-medium">0</span>
+                                        <button onclick="resolveAll('delayed_shipment')" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-full text-xs transition-colors duration-300">
+                                            Resolve All
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="shipment-alerts" class="scroll-container space-y-4">
+                                    <p class="text-gray-500 text-center">No shipment issues detected.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="createOrderTab" class="bg-gray-800 rounded-2xl shadow-lg p-6" style="display:none;">
+                        <h3 class="text-lg font-bold mb-4 text-center">Create New Order</h3>
+                        <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+                            <select id="skuSelect" class="w-full sm:w-1/2 p-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-lg focus:outline-none focus:border-blue-500"></select>
+                            <input type="number" id="quantityInput" placeholder="Enter Quantity (e.g., 20)" class="w-full sm:w-1/4 p-2 bg-gray-700 text-gray-100 border border-gray-600 rounded-lg placeholder-gray-500 focus:outline-none focus:border-blue-500" value="1" />
+                            <button onclick="processNewOrder()" class="w-full sm:w-1/4 bg-blue-600 text-white font-medium py-2 px-4 rounded-xl hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
+                                Process Order
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="deadlinesTab" class="bg-gray-800 rounded-2xl shadow-lg p-6" style="display:none;">
+                        <div id="deadlines-loading" class="flex justify-center items-center py-10" style="display:none;">
+                            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-100"></div>
+                        </div>
+                        <div id="deadlines-content" class="space-y-8" style="display:none;">
+                            <div class="bg-gray-800 rounded-2xl shadow-lg p-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-xl font-semibold">Upcoming Deadlines</h2>
+                                    <div class="flex items-center space-x-2">
+                                        <span id="deadline-count" class="px-3 py-1 bg-green-800 text-green-100 rounded-full text-sm font-medium">0</span>
+                                        <button onclick="resolveAll('deadline')" class="px-3 py-1 bg-gray-600 hover:bg-gray-500 text-gray-200 rounded-full text-xs transition-colors duration-300">
+                                            Resolve All
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="deadline-alerts" class="scroll-container space-y-4">
+                                    <p class="text-gray-500 text-center">No upcoming deadlines. You're all caught up!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="customModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.5); display: none;">
+        <div class="bg-gray-800 rounded-lg p-6 shadow-xl w-full max-w-sm transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+            <h3 class="text-xl font-bold mb-2 text-gray-100" id="modalTitle"></h3>
+            <p class="text-gray-300 mb-4" id="modalMessage"></p>
+            <button onclick="hideModal()" class="w-full bg-blue-600 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- API URLs ---
+        const REPORTING_API_URL = 'http://127.0.0.1:5000/reports';
+        const NOTIFICATION_API_URL = 'http://127.0.0.1:5000/api/notifications';
+        const PRODUCTS_API_URL = 'http://127.0.0.1:5000/api/products';
+        const PROCESS_ORDER_API_URL = 'http://127.0.0.1:5000/api/process_order';
+
+        // --- Main Tab UI Elements ---
+        const reportsTabBtn = document.getElementById('reportsTabBtn');
+        const notificationsTabBtn = document.getElementById('notificationsTabBtn');
+        const reportsTab = document.getElementById('reportsTab');
+        const notificationsTab = document.getElementById('notificationsTab');
+
+        // --- Reporting Module UI Elements ---
+        const generateBtn = document.getElementById('generateBtn');
+        const reportList = document.getElementById('reportList');
+        const statusBox = document.getElementById('statusBox');
+
+        // --- Notifications Module UI Elements ---
+        const alertsTabInnerBtn = document.getElementById('alertsTabInnerBtn');
+        const createOrderTabBtn = document.getElementById('createOrderTabBtn');
+        const deadlinesTabBtn = document.getElementById('deadlinesTabBtn');
+        const alertsTabInner = document.getElementById('alertsTabInner');
+        const createOrderTab = document.getElementById('createOrderTab');
+        const deadlinesTab = document.getElementById('deadlinesTab');
+        const loadingSpinner = document.getElementById('loading');
+        const dashboardContent = document.getElementById('dashboard-content');
+        const deadlinesLoading = document.getElementById('deadlines-loading');
+        const deadlinesContent = document.getElementById('deadlines-content');
+        const skuSelect = document.getElementById('skuSelect');
+        const quantityInput = document.getElementById('quantityInput');
+        const lowStockContainer = document.getElementById('low-stock-alerts');
+        const newOrderContainer = document.getElementById('new-order-alerts');
+        const shipmentContainer = document.getElementById('shipment-alerts');
+        const deadlineContainer = document.getElementById('deadline-alerts');
+        const lowStockCount = document.getElementById('low-stock-count');
+        const newOrderCount = document.getElementById('new-order-count');
+        const shipmentCount = document.getElementById('shipment-count');
+        const deadlineCount = document.getElementById('deadline-count');
+        const customModal = document.getElementById('customModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalContent = document.getElementById('modalContent');
+        const initialLoading = document.getElementById('initialLoading');
+        const mainContent = document.getElementById('mainContent');
+
+        
+        // --- Global Functions ---
+        function showModal(title, message) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            customModal.style.display = 'flex';
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        window.hideModal = function() {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                customModal.style.display = 'none';
+            }, 300);
+        }
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString();
+        }
+
+        // --- Reporting Module Functions ---
+        const renderReports = (reports) => {
+            reportList.innerHTML = '';
+            if (reports.length === 0) {
+                reportList.innerHTML = `
+                    <div class="flex justify-center items-center py-8">
+                        <p class="text-gray-400 text-sm">No reports generated yet.</p>
+                    </div>
+                `;
+            } else {
+                reports.forEach(report => {
+                    const reportItem = document.createElement('div');
+                    reportItem.className = 'py-4 px-2 sm:flex sm:justify-between sm:items-center hover:bg-gray-50 transition-colors duration-200 rounded-lg report-item-dark';
+                    let statusClass = '';
+                    let statusText = '';
+                    let statusIcon = '';
+                    switch (report.status) {
+                        case 'Generating':
+                            statusClass = 'text-yellow-400 bg-yellow-900';
+                            statusText = 'Generating...';
+                            statusIcon = `
+                                <svg class="animate-spin-slow h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 4.75A7.25 7.25 0 0 0 4.75 12a7.25 7.25 0 0 0 7.25 7.25c3.67 0 6.74-2.69 7.15-6.22l-.01-.1-.01-.07h-2.12a5.12 5.12 0 0 1-5.02 4.73A5.25 5.25 0 0 1 6.75 12a5.25 5.25 0 0 1 5.25-5.25V4.75Z" class="opacity-30" />
+                                    <path fill-rule="evenodd" d="M11.646 2.646a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L12.5 3.707V6.5a.5.5 0 0 1-1 0V3.707L10.354 5.354a.5.5 0 1 1-.708-.708l2-2ZM12 4.75A7.25 7.25 0 0 0 4.75 12a7.25 7.25 0 0 0 7.25 7.25v-2.25A5.25 5.25 0 0 1 6.75 12a5.25 5.25 0 0 1 5.25-5.25V4.75Z" clip-rule="evenodd" />
+                                </svg>`;
+                            break;
+                        case 'Sent':
+                            statusClass = 'text-green-400 bg-green-900';
+                            statusText = 'Sent';
+                            statusIcon = `
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-green-400">
+                                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                                </svg>`;
+                            break;
+                        case 'Failed':
+                            statusClass = 'text-red-400 bg-red-900';
+                            statusText = 'Failed';
+                            statusIcon = `
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-red-400">
+                                    <path fill-rule="evenodd" d="M9.401 3.003c1.155-2.003 4.043-2.003 5.198 0l7.355 12.748c1.154 2.002-.308 4.503-2.599 4.503H4.645c-2.291 0-3.753-2.501-2.599-4.503L9.4 3.003Zm2.022 13.627a1.125 1.125 0 1 1-2.25 0 1.125 1.125 0 0 1 2.25 0ZM12 10.375a.75.75 0 0 0-.75.75v3.75a.75.75 0 0 0 1.5 0v-3.75a.75.75 0 0 0-.75-.75Z" clip-rule="evenodd" />
+                                </svg>`;
+                            break;
+                    }
+                    reportItem.innerHTML = `
+                        <div class="flex-grow">
+                            <p class="text-base font-medium">${report.name || 'Unnamed Report'}</p>
+                            <p class="text-sm text-gray-400">
+                                <span class="font-semibold">${report.accountant || 'N/A'}</span> |
+                                <span class="font-semibold">${report.currency || 'N/A'}</span> |
+                                <span class="font-semibold">${report.format || 'N/A'}</span> |
+                                ${report.createdAt ? new Date(report.createdAt).toLocaleDateString() : 'N/A'}
+                            </p>
+                        </div>
+                        <div class="mt-2 sm:mt-0 flex items-center space-x-2">
+                            ${statusIcon}
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusClass}">
+                                ${statusText}
+                            </span>
+                        </div>
+                    `;
+                    reportList.appendChild(reportItem);
+                });
+            }
+        };
+        
+        const fetchReports = async () => {
+            try {
+                const response = await fetch(REPORTING_API_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const reports = await response.json();
+                renderReports(reports.reverse());
+            } catch (error) {
+                console.error("Error fetching reports:", error);
+                showStatus("Failed to connect to the backend. Please ensure the server is running.", 'error');
+            }
+        };
+
+        const showStatus = (message, type) => {
+            statusBox.textContent = message;
+            statusBox.classList.remove('hidden', 'bg-red-100', 'text-red-600', 'bg-green-100', 'text-green-600');
+            if (type === 'success') {
+                statusBox.classList.add('bg-green-100', 'text-green-600');
+            } else if (type === 'error') {
+                statusBox.classList.add('bg-red-100', 'text-red-600');
+            }
+        };
+
+        generateBtn.addEventListener('click', async () => {
+            const reportType = document.getElementById('reportType').value;
+            const accountant = document.getElementById('accountantLocation').value;
+            const currency = document.getElementById('currency').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const email = document.getElementById('email').value;
+            const fileFormat = document.getElementById('fileFormat').value;
+            if (!startDate || !endDate || !email) {
+                showStatus('Please fill out all fields to generate a report.', 'error');
+                return;
+            }
+            const newReport = {
+                name: `${reportType} for ${accountant} (${startDate} to ${endDate})`,
+                accountant: accountant,
+                currency: currency,
+                format: fileFormat,
+                email: email,
+                startDate: startDate,
+                endDate: endDate
+            };
+            try {
+                const response = await fetch(REPORTING_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newReport),
+                });
+                const responseText = await response.text();
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}, response: ${responseText}`);
+                }
+                showStatus('Report generation request sent successfully!', 'success');
+                fetchReports();
+            } catch (error) {
+                console.error("Error sending report data:", error);
+                showStatus(`Failed to send report request: ${error.message}`, 'error');
+            }
+        });
+        
+        // --- Notifications Module Functions ---
+        async function fetchProducts() {
+            try {
+                const response = await fetch(PRODUCTS_API_URL);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch products');
+                }
+                const products = await response.json();
+                populateSkuDropdown(products);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                showModal("Connection Error", "Could not fetch products from the backend. Please make sure it is running.");
+            }
+        }
+
+        function populateSkuDropdown(products) {
+            if (products.length === 0) {
+                skuSelect.innerHTML = `<option value="">No products available</option>`;
+                return;
+            }
+            skuSelect.innerHTML = products.map(p => 
+                `<option value="${p.sku}">${p.name} (${p.sku})</option>`
+            ).join('');
+        }
+
+        async function fetchAndRenderAlerts() {
+            loadingSpinner.style.display = 'flex';
+            dashboardContent.style.display = 'none';
+            try {
+                const response = await fetch(NOTIFICATION_API_URL);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const notifications = await response.json();
+                lowStockContainer.innerHTML = '';
+                newOrderContainer.innerHTML = '';
+                shipmentContainer.innerHTML = '';
+                const lowStockAlerts = notifications.filter(n => n.type === 'low_stock');
+                const newOrderAlerts = notifications.filter(n => n.type === 'new_order');
+                const shipmentAlerts = notifications.filter(n => n.type === 'delayed_shipment');
+                lowStockCount.textContent = lowStockAlerts.length;
+                newOrderCount.textContent = newOrderAlerts.length;
+                shipmentCount.textContent = shipmentAlerts.length;
+                renderAlerts(lowStockAlerts, lowStockContainer);
+                renderAlerts(newOrderAlerts, newOrderContainer);
+                renderAlerts(shipmentAlerts, shipmentContainer);
+            } catch (error) {
+                console.error("Error fetching alerts:", error);
+                showModal("Connection Error", "Could not connect to the backend server. Please make sure it is running.");
+            } finally {
+                loadingSpinner.style.display = 'none';
+                dashboardContent.style.display = 'block';
+            }
+        }
+
+        async function fetchAndRenderDeadlines() {
+            deadlinesLoading.style.display = 'flex';
+            deadlinesContent.style.display = 'none';
+            try {
+                const response = await fetch(NOTIFICATION_API_URL);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const notifications = await response.json();
+                deadlineContainer.innerHTML = '';
+                const deadlineAlerts = notifications.filter(n => n.type === 'deadline');
+                deadlineCount.textContent = deadlineAlerts.length;
+                renderAlerts(deadlineAlerts, deadlineContainer);
+            } catch (error) {
+                console.error("Error fetching deadlines:", error);
+                showModal("Connection Error", "Could not connect to the backend server. Please make sure it is running.");
+            } finally {
+                deadlinesLoading.style.display = 'none';
+                deadlinesContent.style.display = 'block';
+            }
+        }
+
+        function renderAlerts(alerts, container) {
+            if (alerts.length === 0) {
+                const message = container.id === 'low-stock-alerts' ? 'No low stock alerts right now. All good!' :
+                                 container.id === 'new-order-alerts' ? 'No new orders at the moment.' :
+                                 container.id === 'shipment-alerts' ? 'No shipment issues detected.' :
+                                 'No upcoming deadlines. You\'re all caught up!';
+                container.innerHTML = `<p class="text-gray-500 text-center">${message}</p>`;
+                return;
+            }
+            alerts.forEach(alert => {
+                const alertCard = document.createElement('div');
+                alertCard.className = 'alert-card bg-gray-700 p-4 rounded-xl shadow-inner transition-all duration-300 flex justify-between items-start';
+                alertCard.innerHTML = `
+                    <div class="flex-grow">
+                        <p class="font-bold">${alert.message}</p>
+                        <p class="text-sm text-gray-400 mt-1">${alert.source} • <span class="text-xs">${formatTimestamp(alert.timestamp)}</span></p>
+                    </div>
+                    <button onclick="resolveAlert('${alert.id}')" class="ml-4 flex-shrink-0 bg-gray-600 hover:bg-gray-500 text-gray-200 font-medium py-1 px-3 rounded-full text-xs transition-colors duration-300">
+                        Resolve
+                    </button>
+                `;
+                container.appendChild(alertCard);
+            });
+        }
+
+        window.resolveAlert = async function(alertId) {
+            try {
+                const response = await fetch(`${NOTIFICATION_API_URL}/${alertId}/resolve`, {
+                    method: 'PUT'
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to resolve alert on the server.');
+                }
+                showModal("Resolved!", "The alert has been marked as resolved.");
+                const activeTab = document.querySelector('.tab-button.active').id;
+                if (activeTab === 'notificationsTabBtn') {
+                    const innerTab = document.querySelector('.tab-button.active').textContent.trim();
+                    if (innerTab === 'Notifications & Alerts') {
+                        fetchAndRenderAlerts();
+                    } else if (innerTab === 'Deadlines') {
+                        fetchAndRenderDeadlines();
+                    }
+                }
+            } catch (error) {
+                console.error("Error resolving alert:", error);
+                showModal("Error", "Could not resolve alert. Please try again.");
+            }
+        }
+        
+        window.resolveAll = async function(alertType) {
+            let currentCount;
+            if (alertType === 'low_stock') currentCount = parseInt(lowStockCount.textContent);
+            else if (alertType === 'new_order') currentCount = parseInt(newOrderCount.textContent);
+            else if (alertType === 'delayed_shipment') currentCount = parseInt(shipmentCount.textContent);
+            else if (alertType === 'deadline') currentCount = parseInt(deadlineCount.textContent);
+            if (currentCount === 0) {
+                showModal("Nothing to Resolve", `There are no active ${alertType.replace('_', ' ')} alerts.`);
+                return;
+            }
+            try {
+                const response = await fetch(`${NOTIFICATION_API_URL}/resolve_by_type/${alertType}`, {
+                    method: 'PUT'
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to resolve alerts on the server.');
+                }
+                const data = await response.json();
+                showModal("All Resolved!", data.message);
+                const activeTab = document.querySelector('.tab-button.active').id;
+                if (activeTab === 'notificationsTabBtn') {
+                    const innerTab = document.querySelector('.tab-button.active').textContent.trim();
+                    if (innerTab === 'Notifications & Alerts') {
+                        fetchAndRenderAlerts();
+                    } else if (innerTab === 'Deadlines') {
+                        fetchAndRenderDeadlines();
+                    }
+                }
+            } catch (error) {
+                console.error("Error resolving all alerts:", error);
+                showModal("Error", `Could not resolve all alerts. ${error.message}`);
+            }
+        }
+
+        window.processNewOrder = async function() {
+            const sku = skuSelect.value;
+            const quantity = parseInt(quantityInput.value, 10);
+            if (!sku || isNaN(quantity) || quantity <= 0) {
+                showModal("Invalid Input", "Please select a valid SKU and enter a positive quantity.");
+                return;
+            }
+            try {
+                const payload = { sku, quantity };
+                const response = await fetch(PROCESS_ORDER_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to process order on the server.');
+                }
+                const data = await response.json();
+                showModal("Success!", data.message);
+                fetchAndRenderAlerts();
+                fetchAndRenderDeadlines();
+            } catch (error) {
+                console.error("Error processing order:", error);
+                showModal("Error", `Could not process order. ${error.message}`);
+            }
+        }
+
+        // --- Tab Switching Logic ---
+        function showMainTab(tabName) {
+            reportsTab.style.display = 'none';
+            notificationsTab.style.display = 'none';
+            reportsTabBtn.classList.remove('active');
+            notificationsTabBtn.classList.remove('active');
+            reportsTabBtn.classList.add('inactive');
+            notificationsTabBtn.classList.add('inactive');
+
+            if (tabName === 'reports') {
+                reportsTab.style.display = 'block';
+                reportsTabBtn.classList.add('active');
+                reportsTabBtn.classList.remove('inactive');
+            } else if (tabName === 'notifications') {
+                notificationsTab.style.display = 'block';
+                notificationsTabBtn.classList.add('active');
+                notificationsTabBtn.classList.remove('inactive');
+            }
+        }
+
+        function showInnerTab(tabName) {
+            alertsTabInner.style.display = 'none';
+            createOrderTab.style.display = 'none';
+            deadlinesTab.style.display = 'none';
+            alertsTabInnerBtn.classList.remove('active');
+            alertsTabInnerBtn.classList.add('inactive');
+            createOrderTabBtn.classList.remove('active');
+            createOrderTabBtn.classList.add('inactive');
+            deadlinesTabBtn.classList.remove('active');
+            deadlinesTabBtn.classList.add('inactive');
+
+            if (tabName === 'alerts') {
+                alertsTabInner.style.display = 'block';
+                alertsTabInnerBtn.classList.add('active');
+                alertsTabInnerBtn.classList.remove('inactive');
+                fetchAndRenderAlerts();
+            } else if (tabName === 'create-order') {
+                createOrderTab.style.display = 'block';
+                createOrderTabBtn.classList.add('active');
+                createOrderTabBtn.classList.remove('inactive');
+            } else if (tabName === 'deadlines') {
+                deadlinesTab.style.display = 'block';
+                deadlinesTabBtn.classList.add('active');
+                deadlinesTabBtn.classList.remove('inactive');
+                fetchAndRenderDeadlines();
+            }
+        }
+
+        reportsTabBtn.addEventListener('click', () => showMainTab('reports'));
+        notificationsTabBtn.addEventListener('click', () => {
+            showMainTab('notifications');
+            showInnerTab('alerts'); // Ensure an inner tab is selected when switching to notifications
+        });
+        alertsTabInnerBtn.addEventListener('click', () => showInnerTab('alerts'));
+        createOrderTabBtn.addEventListener('click', () => showInnerTab('create-order'));
+        deadlinesTabBtn.addEventListener('click', () => showInnerTab('deadlines'));
+
+        // --- Initial Setup on Page Load ---
+        window.onload = function() {
+            // Show loading state and hide main content
+            initialLoading.style.display = 'flex';
+            mainContent.style.display = 'none';
+
+            // Function to check backend connection
+            const checkBackendConnection = async () => {
+                try {
+                    const response = await fetch(REPORTING_API_URL);
+                    if (response.ok) {
+                        // Connection successful: hide loading, show content
+                        initialLoading.style.display = 'none';
+                        mainContent.style.display = 'block';
+                        console.log("Backend connection successful.");
+                        fetchProducts();
+                        showMainTab('reports');
+                        setInterval(fetchReports, 2000);
+                        setInterval(fetchAndRenderAlerts, 5000);
+                    } else {
+                        // Connection failed: show a specific error message
+                        initialLoading.style.display = 'none';
+                        showStatus("Failed to connect to the backend. Please ensure the server is running.", 'error');
+                    }
+                } catch (error) {
+                    // Connection failed due to network error: show a specific error message
+                    initialLoading.style.display = 'none';
+                    showStatus("Failed to connect to the backend. Please ensure the server is running.", 'error');
+                    console.error("Backend connection check failed:", error);
+                }
+            };
+
+            checkBackendConnection();
+        };
+    </script>
+</body>
+</html> -->

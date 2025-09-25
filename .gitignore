@@ -1,0 +1,18 @@
+# Virtual environment
+venv/
+__pycache__/
+
+# Environment variables
+.env
+
+# Generated reports and data
+*.csv
+*.xlsx
+*.pdf
+*.json
+
+# Flask debug file
+.flaskenv
+
+# macOS specific files
+.DS_Store
