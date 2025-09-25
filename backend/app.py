@@ -232,14 +232,16 @@
 
 
 
+import os
 import sys
+
+# This line must come after importing 'os' and 'sys'
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import os
+# All your other imports go here
 import time
 import uuid
 import threading
-import sys
 import json
 from datetime import datetime
 
